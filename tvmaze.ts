@@ -7,6 +7,14 @@ const $searchForm = $("#searchForm");
 
 const TVMAZEURL:string = "https://api.tvmaze.com/search/shows?q="
 
+// image object might cause problems
+interface ShowDataInterface {
+  id: number,
+  name: string,
+  summary: string,
+  image: object,
+}
+
 //TODO: Look into potential for an interface/ On the show.
 //TODO: Defualt image how to?
 
@@ -18,7 +26,7 @@ const TVMAZEURL:string = "https://api.tvmaze.com/search/shows?q="
  */
 
 //  :Promise<object[]>
-async function getShowsByTerm(term:string) {
+async function getShowsByTerm(term: string) {
   // TODO: Make an ajax request to TVMAZE API
   // Get TvMazd api url
   // ajax already installed
@@ -27,9 +35,16 @@ async function getShowsByTerm(term:string) {
   // Example: https://api.tvmaze.com/search/shows?q=girls
 
   //TODO: Add typing
+  // make request
+  // map over array -> showsList.data
+  // .show -> .id, .name, .image, .summary
   const showsList = await axios.get(TVMAZEURL+term);
+  
+  // id: s.show.id
+  let shows = showsList.data.map(s: Object => 
+    { "id": s.show.id, "name": s.show.name, "summary": s.show.summary, "image": s.show.image })
 
-  return showsList;
+  return showsList.data;
 
 
 
@@ -90,7 +105,7 @@ function populateShows(shows) {
  */
 
 async function searchForShowAndDisplay() {
-  const term = $("#searchForm-term").val();
+  const term = $("#searchForm-term").val() as string;
   const shows = await getShowsByTerm(term);
 
   $episodesArea.hide();

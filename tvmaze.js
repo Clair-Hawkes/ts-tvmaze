@@ -12762,13 +12762,20 @@ var TVMAZEURL = "https://api.tvmaze.com/search/shows?q=";
 //  :Promise<object[]>
 function getShowsByTerm(term) {
     return __awaiter(this, void 0, void 0, function () {
-        var showsList;
+        var showsList, shows;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, axios_1.default.get(TVMAZEURL + term)];
                 case 1:
                     showsList = _a.sent();
-                    return [2 /*return*/, showsList];
+                    shows = showsList.data.map(s, function (Object) {
+                        "id";
+                        s.show.id, "name";
+                        s.show.name, "summary";
+                        s.show.summary, "image";
+                        s.show.image;
+                    });
+                    return [2 /*return*/, showsList.data];
             }
         });
     });
