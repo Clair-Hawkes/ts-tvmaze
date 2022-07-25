@@ -12,6 +12,13 @@ interface ShowDataInterface {
   id: number,
   name: string,
   summary: string,
+  image: string,
+}
+
+interface ShowAPIDataInterface {
+  id: number,
+  name: string,
+  summary: string,
   image: object,
 }
 
@@ -26,7 +33,7 @@ interface ShowDataInterface {
  */
 
 //  :Promise<object[]>
-async function getShowsByTerm(term: string) {
+async function getShowsByTerm(term: string):Promise<ShowDataInterface[]> {
   // TODO: Make an ajax request to TVMAZE API
   // Get TvMazd api url
   // ajax already installed
@@ -39,13 +46,17 @@ async function getShowsByTerm(term: string) {
   // map over array -> showsList.data
   // .show -> .id, .name, .image, .summary
   const showsList = await axios.get(TVMAZEURL+term);
-  
+
   // id: s.show.id
-  let shows = showsList.data.map(s: Object => 
-    { "id": s.show.id, "name": s.show.name, "summary": s.show.summary, "image": s.show.image })
+  let shows: ShowDataInterface[]  = showsList.data.map((s:Object) => {
+    return (
+    { "id": s.show.id,
+    "name": s.show.name,
+    "summary": s.show.summary,
+    "image": s.show.image.original })
+  })
 
-  return showsList.data;
-
+  return shows;
 
 
 
