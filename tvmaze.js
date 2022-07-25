@@ -12765,17 +12765,21 @@ function getShowsByTerm(term) {
         var showsList, shows;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, axios_1.default.get(TVMAZEURL + term)];
+                case 0:
+                    console.log("getSHowsByTerm", term);
+                    return [4 /*yield*/, axios_1.default.get(TVMAZEURL + term)];
                 case 1:
                     showsList = _a.sent();
-                    shows = showsList.data.map(s, function (Object) {
-                        "id";
-                        s.show.id, "name";
-                        s.show.name, "summary";
-                        s.show.summary, "image";
-                        s.show.image;
+                    shows = showsList.data.map(function (s) {
+                        var _a;
+                        return ({
+                            "id": s.show.id,
+                            "name": s.show.name,
+                            "summary": s.show.summary,
+                            "image": (_a = s.show.image) === null || _a === void 0 ? void 0 : _a.original
+                        });
                     });
-                    return [2 /*return*/, showsList.data];
+                    return [2 /*return*/, shows];
             }
         });
     });

@@ -5,7 +5,7 @@ const $showsList = $("#showsList");
 const $episodesArea = $("#episodesArea");
 const $searchForm = $("#searchForm");
 
-const TVMAZEURL:string = "https://api.tvmaze.com/search/shows?q="
+const TVMAZEURL: string = "https://api.tvmaze.com/search/shows?q=";
 
 // image object might cause problems
 interface ShowDataInterface {
@@ -33,7 +33,8 @@ interface ShowAPIDataInterface {
  */
 
 //  :Promise<object[]>
-async function getShowsByTerm(term: string):Promise<ShowDataInterface[]> {
+async function getShowsByTerm(term: string): Promise<ShowDataInterface[]> {
+  console.log("getSHowsByTerm",term);
   // TODO: Make an ajax request to TVMAZE API
   // Get TvMazd api url
   // ajax already installed
@@ -45,16 +46,27 @@ async function getShowsByTerm(term: string):Promise<ShowDataInterface[]> {
   // make request
   // map over array -> showsList.data
   // .show -> .id, .name, .image, .summary
-  const showsList = await axios.get(TVMAZEURL+term);
+  const showsList = await axios.get(TVMAZEURL + term);
 
   // id: s.show.id
-  let shows: ShowDataInterface[]  = showsList.data.map((s:Object) => {
-    return (
-    { "id": s.show.id,
-    "name": s.show.name,
-    "summary": s.show.summary,
-    "image": s.show.image.original })
-  })
+  let shows: ShowDataInterface[] = showsList.data.map(
+    (s: {
+      show: {
+        id: String,
+        name: String,
+        summary: String,
+        image: ({original?:String} | null);
+      };
+    }
+    ) => {
+      return (
+        {
+          "id": s.show.id,
+          "name": s.show.name,
+          "summary": s.show.summary,
+          "image": s.show.image?.original
+        });
+    });
 
   return shows;
 
@@ -90,7 +102,7 @@ function populateShows(shows) {
 
   for (let show of shows) {
     const $show = $(
-        `<div data-show-id="${show.id}" class="Show col-md-12 col-lg-6 mb-4">
+      `<div data-show-id="${show.id}" class="Show col-md-12 col-lg-6 mb-4">
          <div class="media">
            <img
               src="http://static.tvmaze.com/uploads/images/medium_portrait/160/401704.jpg"
@@ -107,7 +119,8 @@ function populateShows(shows) {
        </div>
       `);
 
-    $showsList.append($show);  }
+    $showsList.append($show);
+  }
 }
 
 
