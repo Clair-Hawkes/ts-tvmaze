@@ -5,6 +5,8 @@ const $showsList = $("#showsList");
 const $episodesArea = $("#episodesArea");
 const $searchForm = $("#searchForm");
 
+const DEFAULTIMAGE = "https://tinyurl.com/tv-missing";
+
 const TVMAZEURL: string = "https://api.tvmaze.com/search/shows?q=";
 
 // image object might cause problems
@@ -50,25 +52,27 @@ async function getShowsByTerm(term: string): Promise<ShowDataInterface[]> {
 
   // id: s.show.id
   let shows: ShowDataInterface[] = showsList.data.map(
+    // TODO: lowercase string for typing, number, etc
     (s: {
       show: {
-        id: String,
-        name: String,
-        summary: String,
-        image: ({original?:String} | null);
+        id: number,
+        name: string,
+        summary: string,
+        image: ({original?:string} | null);
       };
     }
-    ) => {
+    ):ShowDataInterface => {
       return (
         {
           "id": s.show.id,
           "name": s.show.name,
           "summary": s.show.summary,
-          "image": s.show.image?.original
+          "image": !s.show.image? DEFAULTIMAGE : s.show.image?.original
         });
     });
-
+    console.log(shows);
   return shows;
+
 
 
 
@@ -96,8 +100,8 @@ async function getShowsByTerm(term: string): Promise<ShowDataInterface[]> {
 
 
 /** Given list of shows, create markup for each and to DOM */
-
-function populateShows(shows) {
+// TODO: Typing!
+function populateShows(shows:ShowDataInterface[]):void {
   $showsList.empty();
 
   for (let show of shows) {
@@ -105,7 +109,7 @@ function populateShows(shows) {
       `<div data-show-id="${show.id}" class="Show col-md-12 col-lg-6 mb-4">
          <div class="media">
            <img
-              src="http://static.tvmaze.com/uploads/images/medium_portrait/160/401704.jpg"
+              src="${show.image}"
               alt="Bletchly Circle San Francisco"
               class="w-25 me-3">
            <div class="media-body">
